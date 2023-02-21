@@ -1,11 +1,17 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
+import java.util.*
 
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    kotlin("native.cocoapods")
     id("maven-publish")
+    id("org.jetbrains.dokka")
+    kotlin("native.cocoapods")
+    signing
 }
+
+// Init publish property
+initProp()
 
 kotlin {
     android {
@@ -26,11 +32,6 @@ kotlin {
             baseName = "KmmVerTest"
             xcf.add(this)
         }
-    }
-    js(IR) {
-        moduleName = "kmm-ver-test"
-        nodejs()
-        binaries.library()
     }
 
     cocoapods {
@@ -87,34 +88,91 @@ android {
     }
 }
 
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 afterEvaluate {
+    initProp()
     publishing {
         publications {
             // Creates a Maven publication called "release".
             create<MavenPublication>("release") {
                 // Applies the component for the release build variant.
                 from(components["release"])
-                groupId = "lassic.co.jp"
+                artifact(javadocJar.get())
+                groupId = "io.github.osakila"
                 artifactId = "kmm-ver-test"
-                version = "1.0"
-            }
-            // Creates a Maven publication called “debug”.
-            create<MavenPublication>("debug") {
-                // Applies the component for the debug build variant.
-                from(components["debug"])
-                groupId = "lassic.co.jp"
-                artifactId = "kmm-ver-test-debug"
-                version = "1.0"
+                version = "1.0.0"
+                pom {
+                    name.set("kmm-ver-test")
+                    description.set("kmm-ver-test 1.0.0 - Lightweight logging framework for Kotlin")
+                    url.set("https://github.com/osakila/KmmVerTest")
+                    licenses {
+                        license {
+                            name.set("MIT")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                    developers {
+                        developer {
+                            name.set("osakila")
+                            email.set("osaki@lassic.co.jp")
+                            organization.set("github")
+                            organizationUrl.set("https://www.github.com")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/osakila/KmmVerTest.git")
+                        developerConnection.set("scm:git:ssh://github.com:osakila/KmmVerTest.git")
+                        url.set("https://github.com/osakila/KmmVerTest/tree/main")
+                    }
+                }
             }
         }
         repositories {
             maven {
-                url = uri("https://maven.pkg.github.com/ricohapi/theta-client")
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = System.getenv("GITHUB_USER")
-                    password = System.getenv("GITHUB_PAT") // Personal access token
+                    username = getExtraString("ossrhUsername")
+                    password = getExtraString("ossrhPassword")
                 }
             }
         }
     }
 }
+
+signing {
+    sign(publishing.publications)
+}
+
+
+ext["signing.keyId"] = null
+ext["signing.password"] = null
+ext["signing.secretKeyRingFile"] = null
+ext["ossrhUsername"] = null
+ext["ossrhPassword"] = null
+
+fun initProp() {
+    val secretPropsFile = project.rootProject.file("local.properties")
+    if (secretPropsFile.exists()) {
+        secretPropsFile.reader().use {
+            Properties().apply {
+                load(it)
+            }
+        }.onEach { (name, value) ->
+            ext[name.toString()] = value
+        }
+    } else {
+        ext["signing.keyId"] = System.getenv("SIGNING_KEY_ID")
+        ext["signing.password"] = System.getenv("SIGNING_PASSWORD")
+        ext["signing.secretKeyRingFile"] = System.getenv("SIGNING_SECRET_KEY_RING_FILE")
+        ext["ossrhUsername"] = System.getenv("OSSRH_USERNAME")
+        ext["ossrhPassword"] = System.getenv("OSSRH_PASSWORD")
+    }
+    System.setProperty("signing.keyId", getExtraString("signing.keyId"))
+    System.setProperty("signing.password", getExtraString("signing.password"))
+    System.setProperty("signing.secretKeyRingFile", getExtraString("signing.secretKeyRingFile"))
+}
+
+fun getExtraString(name: String) = ext[name]?.toString()
