@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'KmmVerTest'
-    spec.version                  = '1.0'
+    spec.version                  = '1.0.1'
     spec.homepage                 = 'https://github.com/osakila/KmmVerTest'
     spec.source                   = { :http=> ''}
     spec.authors                  = 'LASSIC'

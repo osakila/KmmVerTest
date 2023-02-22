@@ -13,6 +13,8 @@ plugins {
 // Init publish property
 initProp()
 
+val lib_version = "1.0.1"
+
 kotlin {
     android {
         compilations.all {
@@ -40,8 +42,8 @@ kotlin {
         name = "KmmVerTest"
         authors = "LASSIC"
         license = "MIT"
-        version = "1.0"
-        source = "{ :http => 'https://github.com/osakila/KmmVerTest.git'}"
+        version = lib_version
+        source = "{ :http => 'https://github.com/osakila/KmmVerTest/releases/download/${lib_version}/KmmVerTest.xcframework.zip' }"
         ios.deploymentTarget = "14.0"
         framework {
             baseName = "KmmVerTest"
@@ -103,10 +105,10 @@ afterEvaluate {
                 artifact(javadocJar.get())
                 groupId = "io.github.osakila"
                 artifactId = "kmm-ver-test"
-                version = "1.0.0"
+                version = lib_version
                 pom {
                     name.set("kmm-ver-test")
-                    description.set("kmm-ver-test 1.0.0 - Lightweight logging framework for Kotlin")
+                    description.set("kmm-ver-test ${lib_version} - Lightweight logging framework for Kotlin")
                     url.set("https://github.com/osakila/KmmVerTest")
                     licenses {
                         license {
