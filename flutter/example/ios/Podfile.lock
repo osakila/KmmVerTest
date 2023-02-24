@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_kmm_ver_test (1.0.1):
+    - Flutter
+    - KmmVerTest (= 1.0.1)
+  - KmmVerTest (1.0.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_kmm_ver_test (from `.symlinks/plugins/flutter_kmm_ver_test/ios`)
+
+SPEC REPOS:
+  trunk:
+    - KmmVerTest
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_kmm_ver_test:
+    :path: ".symlinks/plugins/flutter_kmm_ver_test/ios"
+
+SPEC CHECKSUMS:
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_kmm_ver_test: b2e263f45c335d5c8fe3a87d54bf09f3419e56c6
+  KmmVerTest: 5afd3666e4d94a9577c65684eb56adf0b8894f46
+
+PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
+
+COCOAPODS: 1.11.3
