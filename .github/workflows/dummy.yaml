@@ -18,7 +18,7 @@ jobs:
         distribution: 'temurin'
   call-workflow1:
     needs: [setup-env]
-    uses: ./.github/workflows/test1.yml
+    uses: ./.github/workflows/test1.yaml
   call-workflow2:
     needs: [call-workflow1]
-    uses: ./.github/workflows/test2.yml
+    uses: ./.github/workflows/test2.yaml
