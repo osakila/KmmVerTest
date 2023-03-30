@@ -1,13 +1,14 @@
-name: Dummy for test
+name: Test2
 
 on:
   workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
 
 jobs:
-  setup-env:
+  build:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
@@ -16,9 +17,5 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-  call-workflow1:
-    needs: [setup-env]
-    uses: ./.github/workflows/test1.yml
-  call-workflow2:
-    needs: [call-workflow1]
-    uses: ./.github/workflows/test2.yml
+    - name: call-test2
+      run: sh ./scripts/test2.sh
